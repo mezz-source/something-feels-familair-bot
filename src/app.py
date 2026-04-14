@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from src.api.routers.log_router import router as logs_router
 from src.api.routers.user_router import router as users_router
+from src.api.routers.secrets_router import router as secrets_router
 from src.db.session import init_db
 from src.security.runtime_config import validate_runtime_config
 # from dotenv import load_dotenv
@@ -14,5 +15,6 @@ def create_app() -> FastAPI:
 
     app.include_router(users_router, prefix="/api")
     app.include_router(logs_router, prefix="/api")
+    app.include_router(secrets_router, prefix="/api")
 
     return app
