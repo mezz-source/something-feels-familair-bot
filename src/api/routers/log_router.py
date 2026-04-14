@@ -131,6 +131,7 @@ async def create_log(
         CreateLogCore(
             message=log.message,
             acting_user_id=current_user.id,
+            created_at=log.created_at,
         )
     )
 

@@ -6,6 +6,7 @@ from msgspec import Struct
 class CreateLog(Struct):
 	message: str
 	acting_user_id: int
+	created_at: datetime | None = None
 
 
 class GetLog(Struct):

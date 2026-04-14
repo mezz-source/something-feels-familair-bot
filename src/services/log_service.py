@@ -1,5 +1,6 @@
 from src.repo.log_repo import LogRepository
 from src.repo.user_repo import UserRepository
+from datetime import UTC
 from src.schemas.core.log_core import (
 	CreateLog,
 	GetLog,
@@ -74,7 +75,23 @@ class LogService:
 		if not user:
 			return Error(response_code=404, status="NOT_FOUND", detail="User not found")
 
-		created = self.repo.create_log(user_id=request.acting_user_id, message=request.message)
+		created_at_override = None
+		if request.created_at is not None:
+			if request.created_at.tzinfo is None or request.created_at.utcoffset() is None:
+				return Error(
+					response_code=400,
+					status="BAD_REQUEST",
+					detail="created_at must include a timezone offset",
+				)
+
+			# Persist as UTC-naive to match existing DB column behavior.
+			created_at_override = request.created_at.astimezone(UTC).replace(tzinfo=None)
+
+		created = self.repo.create_log(
+			user_id=request.acting_user_id,
+			message=request.message,
+			created_at=created_at_override,
+		)
 
 		try:
 			display_time = created.created_at.strftime("%b %d, %Y %I:%M:%S %p")

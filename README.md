@@ -92,10 +92,11 @@ Authorization: Bearer <access_token>
 
 ### Logs
 
-- GET /api/logs/ (auth): list own logs
+- GET /api/logs/ (auth): list logs (supports optional user_id, offset, limit query params)
 - GET /api/logs/{log_id} (auth): get one owned log
-- POST /api/logs/ (auth): create log
+- POST /api/logs/ (auth): create log (optional created_at override)
 - PATCH /api/logs/{log_id} (auth): modify owned log
+- WS /api/logs/ws?token=<JWT> (auth): subscribe to log.created events
 
 ## Quick Start
 
@@ -157,13 +158,33 @@ curl -X POST http://127.0.0.1:8000/api/users/login \
   -d '{"username":"camey","password":"securePass123"}'
 ```
 
-Create log (replace TOKEN):
+Create log with server timestamp (replace TOKEN):
 
 ```bash
 curl -X POST http://127.0.0.1:8000/api/logs/ \
   -H "Authorization: Bearer TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"message":"first log entry"}'
+```
+
+Create log with timezone-aware timestamp override:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/logs/ \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"message":"logged from mobile","created_at":"2026-04-13T21:42:00-05:00"}'
+```
+
+Notes for `created_at` override:
+- Field is optional.
+- Must include a timezone offset (for example `Z` or `-05:00`).
+- Server normalizes it to UTC for storage.
+
+Subscribe to realtime log events via WebSocket:
+
+```text
+ws://127.0.0.1:8000/api/logs/ws?token=<access_token>
 ```
 
 ## Notes

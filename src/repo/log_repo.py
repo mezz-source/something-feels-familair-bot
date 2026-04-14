@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class LogRepository():
     def __init__(self, db):
         self.db = db
@@ -40,10 +43,14 @@ class LogRepository():
 
         return self.db.query(Log).count()
 
-    def create_log(self, user_id: int, message: str):
+    def create_log(self, user_id: int, message: str, created_at: datetime | None = None):
         from src.models.log_model import Log
 
-        log = Log(user_id=user_id, message=message)
+        log_data = {"user_id": user_id, "message": message}
+        if created_at is not None:
+            log_data["created_at"] = created_at
+
+        log = Log(**log_data)
         self.db.add(log)
         self.db.commit()
         self.db.refresh(log)
