@@ -23,6 +23,7 @@ starlette==1.0.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 yarl==1.23.0
+requests==2.33.1
 uvicorn==0.42.0
 msgspec==0.21.1
 slowapi==0.1.9

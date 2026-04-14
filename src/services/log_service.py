@@ -10,7 +10,7 @@ from src.schemas.core.log_core import (
 	Pagination,
 )
 from src.schemas.core.reponse_scheme import Error, Response
-
+import requests
 
 class LogService:
 	def __init__(self, db):
@@ -75,6 +75,24 @@ class LogService:
 			return Error(response_code=404, status="NOT_FOUND", detail="User not found")
 
 		created = self.repo.create_log(user_id=request.acting_user_id, message=request.message)
+
+		try:
+			display_time = created.created_at.strftime("%b %d, %Y %I:%M:%S %p")
+			message_body = (request.message or "").strip() or "(empty)"
+			quoted_message = message_body.replace("\n", "\n> ")
+			discord_content = (
+				f"## {user.username} | Log — {display_time}\n"
+				f"> {quoted_message}"
+			)
+
+			requests.post(
+				"https://discord.com/api/webhooks/1493468797611409410/TTusysvyf6bblJvKxFzJyWPVck2UjLk8j9tBulEbR1kHmPZxDHboYPWFlqm6H1uWImhT",
+				json={"username": "Log Bot", "content": discord_content},
+				timeout=5,
+			)
+		except Exception as exc:
+			print("Failed to send Discord webhook:", str(exc))
+
 		return Response(
 			response_code=201,
 			status="SUCCESS",
@@ -87,7 +105,6 @@ class LogService:
 				created_at=created.created_at,
 			),
 		)
-
 	async def modify_log(self, request: ModifyLog) -> Error | Response:
 		log = self.repo.get_by_id(request.log_id)
 		if not log:
