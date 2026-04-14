@@ -1,6 +1,6 @@
 {
   "name": "SFF Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "image": "mcr.microsoft.com/devcontainers/python:3.13",
   "remoteEnv": {
     "JWT_SECRET": "${localEnv:JWT_SECRET}",
     "USER_CREATION_TOKEN": "${localEnv:USER_CREATION_TOKEN}",
