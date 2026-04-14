@@ -29,6 +29,7 @@ async def mezz_note(request: Request):
         }
     )
 
+# it helped me with the websocket implementation 💗
 @router.get("/copilot-note")
 @limiter.limit("20/minute")
 async def copilot_note(request: Request):
