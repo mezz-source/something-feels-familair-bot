@@ -1,6 +1,9 @@
 # SFF Bot Backend
 
-A FastAPI backend for user accounts and text logs.
+A FastAPI backend for user accounts and text logs
+this was specifically made for a roblox game i was working on where I wanted our developers to post logs from a studio plugin!
+
+NOTE: currently account creation is being restrained by a header token being needed, i dont want any joe shmoe from adding a user to the db
 
 ## What This Project Uses
 
@@ -189,6 +192,5 @@ ws://127.0.0.1:8000/api/logs/ws?token=<access_token>
 
 ## Notes
 
-- Tables are auto-created at startup through Base.metadata.create_all(...).
-- This is good for learning/dev. For production schema evolution, use Alembic migrations.
+- Tables are auto-created at startup through Base.metadata.create_all(...)
 - Passwords are stored as PBKDF2-SHA256 hashes, never plaintext.
